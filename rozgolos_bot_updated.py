@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import (
@@ -9,24 +10,19 @@ from telegram.ext import (
     ContextTypes,
 )
 
-# Стан анкети
+# States
 FULL_NAME, EMAIL, PHONE, PLATFORM = range(4)
 
-# Логування
 logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    level=logging.INFO
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 logger = logging.getLogger(__name__)
 
-# Команди
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     try:
-        with open("rozgolos_start.jpg", "rb") as photo:
-            await update.message.reply_photo(photo=photo)
+        await update.message.reply_photo(photo=open("rozgolos_start.jpg", "rb"))
     except FileNotFoundError:
         await update.message.reply_text("⚠️ Зображення не знайдено. Продовжимо без нього.")
-
     await update.message.reply_text(
         "🇺🇦 Вас вітає офіційний бот застосунку *ROZGOLOS*.\n\n"
         "Для запуску — заповніть коротку анкету нижче. Це займе менше хвилини.\n\n"
@@ -67,10 +63,12 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await update.message.reply_text("❌ Операцію скасовано.")
     return ConversationHandler.END
 
-# 🔧 ОСНОВНИЙ ЗАПУСК БЕЗ `asyncio.run()`
-def main():
+# 🔧 ПРАВИЛЬНИЙ main з asyncio
+async def main():
     TOKEN = "7859058780:AAHvBh7w7iNvc8KLE9Eq0RMfmjdwKYuAFOA"
     app = ApplicationBuilder().token(TOKEN).build()
+
+    await app.bot.delete_webhook(drop_pending_updates=True)
 
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start)],
@@ -84,11 +82,9 @@ def main():
     )
 
     app.add_handler(conv_handler)
-    app.run_polling()
 
+    await app.run_polling()
 
-if __name__ == '__main__':
-    main()
-
-if __name__ == '__main__':
+if __name__ == "__main__":
+    asyncio.run(main())
     main()

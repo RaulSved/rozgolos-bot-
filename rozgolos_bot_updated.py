@@ -50,15 +50,15 @@ async def get_platform(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
     context.user_data['platform'] = update.message.text
     user_data = context.user_data
     await update.message.reply_text(
-        f"✅ Дякуємо за надану інформацію!
+      await update.message.reply_text(
+        f"""✅ Дякуємо за надану інформацію!
 
-"
-        f"*ПІБ:* {user_data['full_name']}
-"
-        f"*Email:* {user_data['email']}
-"
-        f"*Телефон:* {user_data['phone']}
-"
+*ПІБ:* {user_data['full_name']}
+*Email:* {user_data['email']}
+*Телефон:* {user_data['phone']}
+*ОС:* {user_data['platform']}""",
+        parse_mode="Markdown"
+    )
         f"*ОС:* {user_data['platform']}
 
 "

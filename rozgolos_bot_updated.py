@@ -19,11 +19,9 @@ FULL_NAME, EMAIL, PHONE, PLATFORM = range(4)
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await update.message.reply_photo(photo=open("rozgolos_start.jpg", "rb"))
     await update.message.reply_text(
-        f"""🇺🇦 Вас вітає офіційний бот застосунку *ROZGOLOS*.
-
-Для запуску — заповніть коротку анкету нижче. Це займе менше хвилини.
-
-🔽 Натисніть *Продовжити* щоб розпочати.""",
+        "🇺🇦 Вас вітає офіційний бот застосунку *ROZGOLOS*.\n\n"
+        "Для запуску — заповніть коротку анкету нижче. Це займе менше хвилини.\n\n"
+        "🔽 Натисніть *Продовжити* щоб розпочати.",
         reply_markup=ReplyKeyboardMarkup([['Продовжити']], resize_keyboard=True),
         parse_mode="Markdown"
     )
@@ -41,10 +39,7 @@ async def get_email(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 async def get_phone(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data['phone'] = update.message.text
-    await update.message.reply_text(
-        "📱 Яка операційна система на вашому телефоні?
-Наприклад: Android або iOS"
-    )
+    await update.message.reply_text("📱 Яка операційна система на вашому телефоні? Наприклад: Android або iOS")
     return PLATFORM
 
 async def get_platform(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -61,11 +56,11 @@ async def get_platform(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
     return ConversationHandler.END
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    await update.message.reply_text("❌ Ви скасували заповнення форми.")
+    await update.message.reply_text("❌ Операцію скасовано. Щоб почати знову, введіть /start.")
     return ConversationHandler.END
 
 if __name__ == '__main__':
-    TOKEN = os.environ.get("BOT_TOKEN")
+    TOKEN = os.environ.get("BOT_TOKEN")  # або встав сюди токен напряму
     app = ApplicationBuilder().token(TOKEN).build()
 
     conv_handler = ConversationHandler(

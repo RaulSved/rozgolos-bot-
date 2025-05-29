@@ -1,4 +1,5 @@
 import logging
+import asyncio
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import (
     ApplicationBuilder,
@@ -62,13 +63,9 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await update.message.reply_text("❌ Операцію скасовано.")
     return ConversationHandler.END
 
-if __name__ == '__main__':
+async def main():
     TOKEN = "7859058780:AAHvBh7w7iNvc8KLE9Eq0RMfmjdwKYuAFOA"
     app = ApplicationBuilder().token(TOKEN).build()
-
-    # Видаляємо вебхук
-    import asyncio
-    asyncio.run(app.bot.delete_webhook(drop_pending_updates=True))
 
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start)],
@@ -82,4 +79,7 @@ if __name__ == '__main__':
     )
 
     app.add_handler(conv_handler)
-    app.run_polling()
+    await app.run_polling()
+
+if __name__ == '__main__':
+    asyncio.run(main())

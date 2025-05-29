@@ -48,7 +48,7 @@ async def get_phone(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 async def get_platform(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data['platform'] = update.message.text
-     await update.message.reply_text(
+   await update.message.reply_text(
         f"""✅ Дякуємо за надану інформацію!
 
 *ПІБ:* {user_data['full_name']}
@@ -57,12 +57,6 @@ async def get_platform(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
 *ОС:* {user_data['platform']}""",
         parse_mode="Markdown"
     )
-    return ConversationHandler.END
-
-async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    await update.message.reply_text('❌ Ви скасували заповнення анкети.')
-    return ConversationHandler.END
-
 if __name__ == '__main__':
     TOKEN = os.environ.get("BOT_TOKEN")  # або встав сюди токен напряму
     app = ApplicationBuilder().token(TOKEN).build()

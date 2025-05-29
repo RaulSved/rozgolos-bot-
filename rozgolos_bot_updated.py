@@ -18,11 +18,16 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    try:
+        await update.message.reply_photo(photo=open("rozgolos_start.jpg", "rb"))
+    except FileNotFoundError:
+        await update.message.reply_text("(Зображення не знайдено)")
+    
     await update.message.reply_text(
         "\U0001F1FA\U0001F1E6 Вас вітає офіційний бот застосунку *ROZGOLOS*\n\n"
         "Для запуску — заповніть коротку анкету нижче. Це займе менше хвилини.\n\n"
-        "\U0001F53D Натисніть *Продовжити* щоб розпочати.",
-        reply_markup=ReplyKeyboardMarkup([['Продовжити']], resize_keyboard=True),
+        "\u2B07\ufe0f Натисніть *Продовжити* щоб розпочати.",
+        reply_markup=ReplyKeyboardMarkup([["Продовжити"]], resize_keyboard=True),
         parse_mode="Markdown"
     )
     return FULL_NAME
@@ -39,7 +44,9 @@ async def get_email(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 async def get_phone(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data['phone'] = update.message.text
-    await update.message.reply_text("\U0001F4F1 Яка операційна система на вашому телефоні? Наприклад: Android або iOS")
+    await update.message.reply_text(
+        "\U0001F4F1 Яка операційна система на вашому телефоні?\nНаприклад: Android або iOS"
+    )
     return PLATFORM
 
 async def get_platform(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -75,3 +82,4 @@ if __name__ == '__main__':
 
     app.add_handler(conv_handler)
     app.run_polling()
+

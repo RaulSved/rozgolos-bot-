@@ -48,17 +48,13 @@ async def get_phone(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 async def get_platform(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data['platform'] = update.message.text
-    await update.message.reply_text(
+     await update.message.reply_text(
         f"""✅ Дякуємо за надану інформацію!
 
 *ПІБ:* {user_data['full_name']}
 *Email:* {user_data['email']}
 *Телефон:* {user_data['phone']}
 *ОС:* {user_data['platform']}""",
-        parse_mode="Markdown"
-    )
-"
-        f"Очікуйте на дзвінок від нашого спеціаліста.",
         parse_mode="Markdown"
     )
     return ConversationHandler.END

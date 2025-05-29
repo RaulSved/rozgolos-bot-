@@ -22,10 +22,9 @@ logging.basicConfig(
 
 # Старт
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    user = update.effective_user
-    await update.message.reply_photo(photo=open("rozgolos_start.jpg", "rb"))
-    await update.message.reply_text(
-        await update.message.reply_text(
+   user = update.effective_user
+await update.message.reply_photo(photo=open("rozgolos_start.jpg", "rb"))
+await update.message.reply_text(
     f"""🇺🇦 Вас вітає офіційний бот застосунку *ROZGOLOS*.
 
 Для запуску — заповніть коротку анкету нижче. Це займе менше хвилини.
@@ -34,7 +33,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     reply_markup=ReplyKeyboardMarkup([['Продовжити']], resize_keyboard=True),
     parse_mode="Markdown"
 )
-    return FULL_NAME
+return FULL_NAME
 
 async def get_full_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await update.message.reply_text("📝 Введіть, будь ласка, *ПІБ:*", parse_mode="Markdown")

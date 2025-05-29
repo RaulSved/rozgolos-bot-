@@ -69,7 +69,7 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 # 🔧 ОСНОВНИЙ ЗАПУСК БЕЗ `asyncio.run()`
 def main():
-    TOKEN = "тут_встав_свій_токен"
+    TOKEN = "7859058780:AAHvBh7w7iNvc8KLE9Eq0RMfmjdwKYuAFOA"
     app = ApplicationBuilder().token(TOKEN).build()
 
     conv_handler = ConversationHandler(
@@ -85,6 +85,10 @@ def main():
 
     app.add_handler(conv_handler)
     app.run_polling()
+
+
+if __name__ == '__main__':
+    main()
 
 if __name__ == '__main__':
     main()

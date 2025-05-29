@@ -43,7 +43,7 @@ async def get_email(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 async def get_phone(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data['phone'] = update.message.text
     await update.message.reply_text(
-     await update.message.reply_text(
+    await update.message.reply_text(
     "📱 Яка операційна система на вашому телефоні?\nНаприклад: Android або iOS"
 )
     return PLATFORM

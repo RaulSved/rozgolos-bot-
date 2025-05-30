@@ -80,5 +80,10 @@ async def main():
     app.add_handler(conv_handler)
     await app.run_polling()
 
+import nest_asyncio
+import asyncio
+
 if __name__ == "__main__":
-    asyncio.run(main())
+    nest_asyncio.apply()
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())

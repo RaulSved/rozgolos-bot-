@@ -1,247 +1,63 @@
 import logging
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, CallbackContext, ContextTypes, filters
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, InputFile
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, CallbackQueryHandler
+import os
 
-TOKEN = "7859058780:AAHvBh7w7iNvc8KLE9Eq0RMfmjdwKYuAFOA"
+TOKEN = "7666787687:AAHbD..."  # встав сюди свій робочий токен
 
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    level=logging.INFO
-)
+# Увімкнення логів
+logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-WELCOME_TEXT = "👋 Введіть Прізвище та ім’я"
-IMAGE_URL = "https://rozgolos.online/static/telegram-start.jpg"
-
-keyboard = [
-    [
-        InlineKeyboardButton("📲 Android", url="https://play.google.com/store/apps/details?id=com.rozgolos"),
-        InlineKeyboardButton("🍏 iOS", url="https://apps.apple.com/app/id6739999117")
-    ],
-    [
-        InlineKeyboardButton("🌐 Офіційний сайт", url="https://rozgolos.online/bronyuvannya?utm_source=fb&utm_medium=paid_social&utm_campaign=RozgolosTelegram&utm_content=RozgolosTelegram&utm_term=RozgolosTelegram&fbclid=fbclid")
-    ],
-    [
-        InlineKeyboardButton("✅ Продовжити", callback_data="continue")
-    ]
+# Кнопки меню
+keyboard_main = [
+    [InlineKeyboardButton("📱 Android", url="https://play.google.com/store/apps/details?id=com.rozgolos")],
+    [InlineKeyboardButton("🥏 iOS", url="https://apps.apple.com/app/id6739999117")],
+    [InlineKeyboardButton("🌐 Офіційний сайт", url="https://rozgolos.online/bronyuvannya?utm_source=fb&utm_medium=paid_social&utm_campaign=RozgolosTelegram&utm_content=RozgolosTelegram&utm_term=RozgolosTelegram")],
+    [InlineKeyboardButton("➡️ Продовжити", callback_data="continue")]
 ]
 
-reply_markup = InlineKeyboardMarkup(keyboard)
-
+# Обробник /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    chat_id = update.effective_chat.id
-    await context.bot.send_photo(
-        chat_id=chat_id,
-        photo=IMAGE_URL,
-        caption=WELCOME_TEXT,
-        reply_markup=reply_markup
+    user = update.effective_user
+    photo_path = os.path.join(os.path.dirname(__file__), "start.jpg")
+
+    if os.path.exists(photo_path):
+        with open(photo_path, "rb") as photo:
+            await context.bot.send_photo(chat_id=update.effective_chat.id, photo=photo)
+
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="Введіть Прізвище та ім'я",
+        reply_markup=InlineKeyboardMarkup(keyboard_main)
     )
 
-async def handle_continue(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.callback_query.answer()
-    await update.callback_query.message.reply_text("Дякуємо, заявка прийнята! Очікуйте дзвінка від нашого менеджера.")
+# Обробник кнопок
+async def handle_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = update.callback_query
+    await query.answer()
 
+    if query.data == "continue":
+        await query.edit_message_text(text="🙏 Дякуємо! Заявку отримано. Чекайте звідомлення від нашого консультанта!")
+
+# Обробка тексту (ПІБ, email, телефон...)
 async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    # Тут можна зберігати дані або відправляти адміну
-    await update.message.reply_text("✅ Дані прийнято. Натисніть 'Продовжити' для завершення.")
+    text = update.message.text
+    user_id = update.effective_chat.id
 
+    logger.info(f"Заявка від {user_id}: {text}")
+    await update.message.reply_text("🙏 Дякуємо за ваші дані! Натисніть \"Продовжити\" або виберіть платформу.")
+
+# Основна функція
 def main():
-    app = ApplicationBuilder().token(TOKEN).build()
+    app = Application.builder().token(TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
+    app.add_handler(CallbackQueryHandler(handle_buttons))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
-    app.add_handler(MessageHandler(filters.PHOTO, handle_text))
-    app.add_handler(MessageHandler(filters.Document.ALL, handle_text))
-    app.add_handler(MessageHandler(filters.VIDEO, handle_text))
-    app.add_handler(MessageHandler(filters.COMMAND, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.LEFT_CHAT_MEMBER, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_TITLE, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_PHOTO, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.DELETE_CHAT_PHOTO, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.GROUP_CHAT_CREATED, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.SUPERGROUP_CHAT_CREATED, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.CHANNEL_CHAT_CREATED, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.MIGRATE_TO_CHAT_ID, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.MIGRATE_FROM_CHAT_ID, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.PINNED_MESSAGE, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.MESSAGE_AUTO_DELETE_TIMER_CHANGED, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.FORUM_TOPIC_CREATED, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.FORUM_TOPIC_CLOSED, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.FORUM_TOPIC_REOPENED, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.GENERAL_FORUM_TOPIC_HIDDEN, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.GENERAL_FORUM_TOPIC_UNHIDDEN, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.WRITE_ACCESS_ALLOWED, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.USER_SHARED, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.CHAT_SHARED, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.STORY, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.BOOST_ADDED, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.BOOST_REMOVED, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.GIVEAWAY_CREATED, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.GIVEAWAY_COMPLETED, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.GIVEAWAY_WON, handle_text))
 
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-    app.add_handler(MessageHandler(filters.StatusUpdate.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-    
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-    
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-    
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-    
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-    
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-    
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-    
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-    
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-    
-    app.add_handler(MessageHandler(filters.ALL, handle_text))
-
+    print("Бот запущено...")
     app.run_polling()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -91,6 +91,9 @@ async def main():
     TOKEN = getenv("BOT_TOKEN") or "встав_свій_тестовий_токен_сюди"
     app = ApplicationBuilder().token(TOKEN).build()
 
+    # Убирає паралельні сесії getUpdates
+    await app.bot.delete_webhook(drop_pending_updates=True)
+
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler("start", start)],
         states={

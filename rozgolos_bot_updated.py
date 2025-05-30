@@ -10,12 +10,10 @@ from telegram.ext import (
     ContextTypes,
 )
 
-# States
+# Стан анкети
 FULL_NAME, EMAIL, PHONE, PLATFORM = range(4)
 
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
+logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -63,12 +61,10 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await update.message.reply_text("❌ Операцію скасовано.")
     return ConversationHandler.END
 
-# 🔧 ПРАВИЛЬНИЙ main з asyncio
 async def main():
+    # Тестовий токен — не використовувати в продакшені
     TOKEN = "7859058780:AAHvBh7w7iNvc8KLE9Eq0RMfmjdwKYuAFOA"
     app = ApplicationBuilder().token(TOKEN).build()
-
-    await app.bot.delete_webhook(drop_pending_updates=True)
 
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start)],
@@ -82,12 +78,7 @@ async def main():
     )
 
     app.add_handler(conv_handler)
-
     await app.run_polling()
 
 if __name__ == "__main__":
-    import nest_asyncio
-    nest_asyncio.apply()
-
-    import asyncio
-    asyncio.get_event_loop().run_until_complete(main())
+    asyncio.run(main())

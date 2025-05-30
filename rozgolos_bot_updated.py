@@ -1,7 +1,6 @@
 import asyncio
 import logging
-from os import getenv
-from telegram import Update, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
@@ -10,18 +9,17 @@ from telegram.ext import (
     ConversationHandler,
     ContextTypes,
 )
-import nest_asyncio
 
-# СТАНИ анкети
+# States
 AWAIT_NAME, FULL_NAME, EMAIL, PHONE, PLATFORM = range(5)
 
-# Логування
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 logger = logging.getLogger(__name__)
 
-# /start
+ADMIN_CHAT_ID = 7666787687
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     try:
         await update.message.reply_photo(photo=open("rozgolos_start.jpg", "rb"))
@@ -29,64 +27,90 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         await update.message.reply_text("⚠️ Зображення не знайдено. Продовжимо без нього.")
 
     await update.message.reply_text(
-        "\U0001F1FA\U0001F1E6 Вас вітає офіційний бот застосунку *ROZGOLOS*\n\n"
-        "Для запуску — заповніть коротку анкету нижче. Це займе менше хвилини.\n\n"
-        "\u2B07\ufe0f Натисніть *Продовжити*, щоб розпочати.",
-        reply_markup=ReplyKeyboardMarkup([["Продовжити"]], resize_keyboard=True),
-        parse_mode="Markdown"
+        "🇺🇦 Вас вітає офіційний бот застосунку *ROZGOLOS*\.\n\n"
+        "Для запуску — заповніть коротку анкету нижче\. Це займе менше хвилини\.\n\n"
+        "🔽 Натисніть *Продовжити*, щоб розпочати\.",
+        reply_markup=ReplyKeyboardMarkup(
+            [[KeyboardButton("🚀 Продовжити")]], resize_keyboard=True
+        ),
+        parse_mode="MarkdownV2"
     )
     return AWAIT_NAME
 
-# Очікуємо натискання "Продовжити"
 async def await_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    if update.message.text.lower() != "продовжити":
-        await update.message.reply_text("Натисніть кнопку *Продовжити*, щоб почати.", parse_mode="Markdown")
+    if "продовжити" not in update.message.text.lower():
+        await update.message.reply_text("Натисніть кнопку *Продовжити*, щоб почати\.", parse_mode="MarkdownV2")
         return AWAIT_NAME
 
-    await update.message.reply_text("\U0001F464 Введіть *Прізвище та ім’я*:", parse_mode="Markdown")
+    await update.message.reply_text("👤 Введіть *Прізвище та ім’я*:", parse_mode="MarkdownV2")
     return FULL_NAME
 
 async def get_full_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data['full_name'] = update.message.text
-    await update.message.reply_text("\U0001F4E7 Введіть ваш Email:")
+    await update.message.reply_text("📧 Введіть ваш Email:")
     return EMAIL
 
 async def get_email(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data['email'] = update.message.text
-    await update.message.reply_text("\U0001F4DE Введіть ваш номер телефону:")
+    await update.message.reply_text("📞 Введіть ваш номер телефону:")
     return PHONE
 
 async def get_phone(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data['phone'] = update.message.text
-    buttons = [
-        [InlineKeyboardButton("\U0001F4F1 Android", url="https://play.google.com/store/apps/details?id=com.rozgolos")],
-        [InlineKeyboardButton("\U0001F34F iOS", url="https://apps.apple.com/app/id6739999117")],
-    ]
     await update.message.reply_text(
-        "\U0001F4F1 Яка операційна система на вашому телефоні?",
-        reply_markup=InlineKeyboardMarkup(buttons)
+        "📱 Яка операційна система на вашому телефоні?",
+        reply_markup=ReplyKeyboardMarkup([
+            [KeyboardButton("Android")],
+            [KeyboardButton("iOS")]
+        ], resize_keyboard=True)
     )
     return PLATFORM
 
 async def get_platform(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data['platform'] = update.message.text
+
     await update.message.reply_text(
-        f"\u2705 Дякуємо за надану інформацію!\n\n"
-        f"*ПІБ:* {context.user_data['full_name']}\n"
-        f"*Email:* {context.user_data['email']}\n"
-        f"*Телефон:* {context.user_data['phone']}\n"
-        f"*ОС:* {context.user_data['platform']}",
+        f"✅ Дякуємо за надану інформацію!\n\n"
+        f"👤 *ПІБ:* {context.user_data['full_name']}\n"
+        f"📧 *Email:* {context.user_data['email']}\n"
+        f"📞 *Телефон:* {context.user_data['phone']}\n"
+        f"📱 *ОС:* {context.user_data['platform']}",
         parse_mode="Markdown"
     )
+
+    await context.bot.send_message(
+        chat_id=ADMIN_CHAT_ID,
+        text=(
+            "📥 Нова заявка:\n\n"
+            f"👤 ПІБ: {context.user_data['full_name']}\n"
+            f"📧 Email: {context.user_data['email']}\n"
+            f"📞 Телефон: {context.user_data['phone']}\n"
+            f"📱 ОС: {context.user_data['platform']}"
+        )
+    )
+
+    # Додаємо кнопку з переходом на маркет
+    if context.user_data['platform'].lower() == "ios":
+        url = "https://apps.apple.com/app/id6739999117"
+    else:
+        url = "https://play.google.com/store/apps/details?id=com.rozgolos"
+
+    await update.message.reply_text(
+        "⬇️ Завантажити застосунок можна тут:",
+        reply_markup=ReplyKeyboardMarkup(
+            [[KeyboardButton("🔗 Перейти до завантаження", url=url)]], resize_keyboard=True
+        )
+    )
+
+    await update.message.reply_text("🙏 Дякуємо! З вами зв’яжеться наш консультант.")
     return ConversationHandler.END
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    await update.message.reply_text("\u274C Операцію скасовано.")
+    await update.message.reply_text("❌ Операцію скасовано.")
     return ConversationHandler.END
 
 async def main():
-    nest_asyncio.apply()
-    TOKEN = getenv("BOT_TOKEN") or "7859058780:AAHvBh7w7iNvc8KLE9Eq0RMfmjdwKYuAFOA"
+    TOKEN = "7859058780:AAHvBh7w7iNvc8KLE9Eq0RMfmjdwKYuAFOA"
     app = ApplicationBuilder().token(TOKEN).build()
 
     await app.bot.delete_webhook(drop_pending_updates=True)
@@ -104,7 +128,12 @@ async def main():
     )
 
     app.add_handler(conv_handler)
+
     await app.run_polling()
 
 if __name__ == "__main__":
-    asyncio.get_event_loop().run_until_complete(main())
+    import nest_asyncio
+    nest_asyncio.apply()
+
+    asyncio.run(main())
+

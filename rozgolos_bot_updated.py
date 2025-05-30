@@ -27,11 +27,15 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         await update.message.reply_text("⚠️ Зображення не знайдено. Продовжимо без нього.")
 
     await update.message.reply_text(
-        "🇺🇦 Вас вітає офіційний бот застосунку *ROZGOLOS*\.\n\n"
-        "Для запуску — заповніть коротку анкету нижче\. Це займе менше хвилини\.\n\n"
-        "🔽 Натисніть *Продовжити*, щоб розпочати\.",
+        "\U0001F1FA\U0001F1E6 Вас вітає офіційний бот застосунку *ROZGOLOS*\.
+
+"
+        "Для запуску — заповніть коротку анкету нижче\. Це займе менше хвилини\.
+
+"
+        "\U0001F53D Натисніть *Продовжити*, щоб розпочати\.",
         reply_markup=ReplyKeyboardMarkup(
-            [[KeyboardButton("🚀 Продовжити")]], resize_keyboard=True
+            [[KeyboardButton("\U0001F680 Продовжити")]], resize_keyboard=True
         ),
         parse_mode="MarkdownV2"
     )
@@ -42,26 +46,27 @@ async def await_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         await update.message.reply_text("Натисніть кнопку *Продовжити*, щоб почати\.", parse_mode="MarkdownV2")
         return AWAIT_NAME
 
-    await update.message.reply_text("👤 Введіть *Прізвище та ім’я*:", parse_mode="MarkdownV2")
+    await update.message.reply_text("\U0001F464 Введіть *Прізвище та ім’я*:", parse_mode="MarkdownV2")
     return FULL_NAME
 
 async def get_full_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data['full_name'] = update.message.text
-    await update.message.reply_text("📧 Введіть ваш Email:")
+    await update.message.reply_text("\U0001F4E7 Введіть ваш Email:")
     return EMAIL
 
 async def get_email(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data['email'] = update.message.text
-    await update.message.reply_text("📞 Введіть ваш номер телефону:")
+    await update.message.reply_text("\U0001F4DE Введіть ваш номер телефону:")
     return PHONE
 
 async def get_phone(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data['phone'] = update.message.text
     await update.message.reply_text(
-        "📱 Яка операційна система на вашому телефоні?",
+        "\U0001F4F1 Яка операційна система на вашому телефоні?",
         reply_markup=ReplyKeyboardMarkup([
             [KeyboardButton("Android")],
-            [KeyboardButton("iOS")]
+            [KeyboardButton("iOS")],
+            [KeyboardButton("\U0001F310 Офіційний сайт")],
         ], resize_keyboard=True)
     )
     return PLATFORM
@@ -70,42 +75,43 @@ async def get_platform(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
     context.user_data['platform'] = update.message.text
 
     await update.message.reply_text(
-        f"✅ Дякуємо за надану інформацію!\n\n"
-        f"👤 *ПІБ:* {context.user_data['full_name']}\n"
-        f"📧 *Email:* {context.user_data['email']}\n"
-        f"📞 *Телефон:* {context.user_data['phone']}\n"
-        f"📱 *ОС:* {context.user_data['platform']}",
+        f"\u2705 Дякуємо за надану інформацію!\n\n"
+        f"\U0001F464 *ПІБ:* {context.user_data['full_name']}\n"
+        f"\U0001F4E7 *Email:* {context.user_data['email']}\n"
+        f"\U0001F4DE *Телефон:* {context.user_data['phone']}\n"
+        f"\U0001F4F1 *ОС:* {context.user_data['platform']}",
         parse_mode="Markdown"
     )
 
     await context.bot.send_message(
         chat_id=ADMIN_CHAT_ID,
         text=(
-            "📥 Нова заявка:\n\n"
-            f"👤 ПІБ: {context.user_data['full_name']}\n"
-            f"📧 Email: {context.user_data['email']}\n"
-            f"📞 Телефон: {context.user_data['phone']}\n"
-            f"📱 ОС: {context.user_data['platform']}"
+            "\U0001F4E5 Нова заявка:\n\n"
+            f"\U0001F464 ПІБ: {context.user_data['full_name']}\n"
+            f"\U0001F4E7 Email: {context.user_data['email']}\n"
+            f"\U0001F4DE Телефон: {context.user_data['phone']}\n"
+            f"\U0001F4F1 ОС: {context.user_data['platform']}"
         )
     )
 
-    # Додаємо кнопки з переходом на маркети та офіційний сайт
-    app_buttons = [
-        KeyboardButton("🔗 Android", url="https://play.google.com/store/apps/details?id=com.rozgolos"),
-        KeyboardButton("🔗 iOS", url="https://apps.apple.com/app/id6739999117"),
-        KeyboardButton("🌐 Офіційний сайт", url="https://rozgolos.online/bronyuvannya?utm_source=fb&utm_medium=paid_social&utm_campaign=RozgolosTelegram&utm_content=RozgolosTelegram&utm_term=RozgolosTelegram&fbclid=fbclid")
-    ]
-
     await update.message.reply_text(
         "⬇️ Завантажити застосунок або відвідати сайт:",
-        reply_markup=ReplyKeyboardMarkup([app_buttons], resize_keyboard=True)
+        reply_markup=ReplyKeyboardMarkup([
+            [
+                KeyboardButton("📲 Android", url="https://play.google.com/store/apps/details?id=com.rozgolos"),
+                KeyboardButton("📱 iOS", url="https://apps.apple.com/app/id6739999117")
+            ],
+            [
+                KeyboardButton("🌐 Офіційний сайт", url="https://rozgolos.online/bronyuvannya?utm_source=fb&utm_medium=paid_social&utm_campaign=RozgolosTelegram&utm_content=RozgolosTelegram&utm_term=RozgolosTelegram&fbclid=fbclid")
+            ]
+        ], resize_keyboard=True)
     )
 
-    await update.message.reply_text("🙏 Дякуємо! З вами зв’яжеться наш консультант.")
+    await update.message.reply_text("\U0001F64F Дякуємо! З вами зв’яжеться наш консультант.")
     return ConversationHandler.END
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    await update.message.reply_text("❌ Операцію скасовано.")
+    await update.message.reply_text("\u274C Операцію скасовано.")
     return ConversationHandler.END
 
 async def main():
@@ -127,11 +133,9 @@ async def main():
     )
 
     app.add_handler(conv_handler)
-
     await app.run_polling()
 
 if __name__ == "__main__":
     import nest_asyncio
     nest_asyncio.apply()
-
     asyncio.run(main())

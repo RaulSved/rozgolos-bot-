@@ -89,17 +89,16 @@ async def get_platform(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
         )
     )
 
-    # Додаємо кнопку з переходом на маркет
-    if context.user_data['platform'].lower() == "ios":
-        url = "https://apps.apple.com/app/id6739999117"
-    else:
-        url = "https://play.google.com/store/apps/details?id=com.rozgolos"
+    # Додаємо кнопки з переходом на маркети та офіційний сайт
+    app_buttons = [
+        KeyboardButton("🔗 Android", url="https://play.google.com/store/apps/details?id=com.rozgolos"),
+        KeyboardButton("🔗 iOS", url="https://apps.apple.com/app/id6739999117"),
+        KeyboardButton("🌐 Офіційний сайт", url="https://rozgolos.online/bronyuvannya?utm_source=fb&utm_medium=paid_social&utm_campaign=RozgolosTelegram&utm_content=RozgolosTelegram&utm_term=RozgolosTelegram&fbclid=fbclid")
+    ]
 
     await update.message.reply_text(
-        "⬇️ Завантажити застосунок можна тут:",
-        reply_markup=ReplyKeyboardMarkup(
-            [[KeyboardButton("🔗 Перейти до завантаження", url=url)]], resize_keyboard=True
-        )
+        "⬇️ Завантажити застосунок або відвідати сайт:",
+        reply_markup=ReplyKeyboardMarkup([app_buttons], resize_keyboard=True)
     )
 
     await update.message.reply_text("🙏 Дякуємо! З вами зв’яжеться наш консультант.")
@@ -136,4 +135,5 @@ if __name__ == "__main__":
     nest_asyncio.apply()
 
     asyncio.run(main())
+
 

@@ -2,7 +2,7 @@ import asyncio
 import logging
 from telegram import (
     Update, KeyboardButton, ReplyKeyboardMarkup,
-    InlineKeyboardButton, InlineKeyboardMarkup
+    InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove
 )
 from telegram.ext import (
     ApplicationBuilder,
@@ -53,7 +53,12 @@ async def await_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         )
         return AWAIT_NAME
 
-    await update.message.reply_text("👤 Введіть *Прізвище та ім’я*:", parse_mode="MarkdownV2")
+    # Прибираємо кнопку "Продовжити"
+    await update.message.reply_text(
+        "👤 Введіть *Прізвище та ім’я*:",
+        reply_markup=ReplyKeyboardRemove(),
+        parse_mode="MarkdownV2"
+    )
     return FULL_NAME
 
 
@@ -92,10 +97,10 @@ async def get_phone(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         )
     )
 
-    # Кнопки з переходами
+    # Оновлені кнопки з переходами
     buttons = InlineKeyboardMarkup([
-        [InlineKeyboardButton("🔗 Android", url="https://play.google.com/store/apps/details?id=com.rozgolos")],
-        [InlineKeyboardButton("🔗 iOS", url="https://apps.apple.com/app/id6739999117")],
+        [InlineKeyboardButton("🔗 Android", url="https://play.google.com/store/apps/details?id=com.rozgolos?utm_source=fb&utm_medium=paid_social&utm_campaign=Rozgolos04.05.25TGbotGoPl&utm_content=Rozgolos04.05.25TGbotGoPl&utm_term=Rozgolos04.05.25TGbotGoPl")],
+        [InlineKeyboardButton("🔗 iOS", url="https://rozgolos.online/apple/store?utm_source=fb&utm_medium=paid_social&utm_campaign=Rozgolos04.05.25TGbotAppSt&utm_content=Rozgolos04.05.25TGbotAppSt&utm_term=Rozgolos04.05.25TGbotAppSt")],
         [InlineKeyboardButton("🌐 Офіційний сайт", url="https://rozgolos.online/bronyuvannya?utm_source=fb&utm_medium=paid_social&utm_campaign=RozgolosTelegram&utm_content=RozgolosTelegram&utm_term=RozgolosTelegram")]
     ])
 

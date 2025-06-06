@@ -14,7 +14,7 @@ from telegram.ext import (
 )
 
 # Стан анкети
-AWAIT_NAME, FULL_NAME, EMAIL, PHONE, PLATFORM = range(5)
+AWAIT_NAME, FULL_NAME, EMAIL, PHONE = range(4)
 
 # ID чату для повідомлень адміну
 ADMIN_CHAT_ID = 7666787687
@@ -71,26 +71,13 @@ async def get_email(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 async def get_phone(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data["phone"] = update.message.text
-    await update.message.reply_text(
-        "📱 Яка операційна система на вашому телефоні?",
-        reply_markup=ReplyKeyboardMarkup([
-            [KeyboardButton("Android")],
-            [KeyboardButton("iOS")]
-        ], resize_keyboard=True)
-    )
-    return PLATFORM
-
-
-async def get_platform(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    context.user_data["platform"] = update.message.text
 
     # Повідомлення користувачу
     await update.message.reply_text(
         f"✅ Дякуємо за надану інформацію!\n\n"
         f"👤 *ПІБ:* {context.user_data['full_name']}\n"
         f"📧 *Email:* {context.user_data['email']}\n"
-        f"📞 *Телефон:* {context.user_data['phone']}\n"
-        f"📱 *ОС:* {context.user_data['platform']}",
+        f"📞 *Телефон:* {context.user_data['phone']}",
         parse_mode="Markdown"
     )
 
@@ -101,8 +88,7 @@ async def get_platform(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
             "📥 Нова заявка:\n\n"
             f"👤 ПІБ: {context.user_data['full_name']}\n"
             f"📧 Email: {context.user_data['email']}\n"
-            f"📞 Телефон: {context.user_data['phone']}\n"
-            f"📱 ОС: {context.user_data['platform']}"
+            f"📞 Телефон: {context.user_data['phone']}"
         )
     )
 
@@ -137,7 +123,6 @@ async def main():
             FULL_NAME: [MessageHandler(filters.TEXT & ~filters.COMMAND, get_full_name)],
             EMAIL: [MessageHandler(filters.TEXT & ~filters.COMMAND, get_email)],
             PHONE: [MessageHandler(filters.TEXT & ~filters.COMMAND, get_phone)],
-            PLATFORM: [MessageHandler(filters.TEXT & ~filters.COMMAND, get_platform)],
         },
         fallbacks=[CommandHandler("cancel", cancel)],
     )

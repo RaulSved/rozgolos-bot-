@@ -53,7 +53,6 @@ async def await_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         )
         return AWAIT_NAME
 
-    # Прибираємо кнопку "Продовжити"
     await update.message.reply_text(
         "👤 Введіть *Прізвище та ім’я*:",
         reply_markup=ReplyKeyboardRemove(),
@@ -77,7 +76,6 @@ async def get_email(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 async def get_phone(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data["phone"] = update.message.text
 
-    # Повідомлення користувачу
     await update.message.reply_text(
         f"✅ Дякуємо за надану інформацію!\n\n"
         f"👤 *ПІБ:* {context.user_data['full_name']}\n"
@@ -86,7 +84,6 @@ async def get_phone(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         parse_mode="Markdown"
     )
 
-    # Повідомлення адміну
     await context.bot.send_message(
         chat_id=ADMIN_CHAT_ID,
         text=(
@@ -97,9 +94,8 @@ async def get_phone(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         )
     )
 
-    # Оновлені кнопки з переходами
     buttons = InlineKeyboardMarkup([
-        [InlineKeyboardButton("🔗 Android", url="https://play.google.com/store/apps/details?id=com.rozgolos?utm_source=fb&utm_medium=paid_social&utm_campaign=Rozgolos04.05.25TGbotGoPl&utm_content=Rozgolos04.05.25TGbotGoPl&utm_term=Rozgolos04.05.25TGbotGoPl")],
+        [InlineKeyboardButton("🔗 Android", url="https://play.google.com/store/apps/details?id=com.rozgolos&utm_source=fb&utm_medium=paid_social&utm_campaign=Rozgolos04.05.25TGbotGoPl&utm_content=Rozgolos04.05.25TGbotGoPl&utm_term=Rozgolos04.05.25TGbotGoPl")],
         [InlineKeyboardButton("🔗 iOS", url="https://rozgolos.online/apple/store?utm_source=fb&utm_medium=paid_social&utm_campaign=Rozgolos04.05.25TGbotAppSt&utm_content=Rozgolos04.05.25TGbotAppSt&utm_term=Rozgolos04.05.25TGbotAppSt")],
         [InlineKeyboardButton("🌐 Офіційний сайт", url="https://rozgolos.online/bronyuvannya?utm_source=fb&utm_medium=paid_social&utm_campaign=RozgolosTelegram&utm_content=RozgolosTelegram&utm_term=RozgolosTelegram")]
     ])

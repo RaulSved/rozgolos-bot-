@@ -32,14 +32,14 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     try:
         await update.message.reply_photo(photo=open("rozgolos_start.jpg", "rb"))
     except FileNotFoundError:
-        await update.message.reply_text("⚠️ Зображення не знайдено.")
+        await update.message.reply_text("\u26a0\ufe0f Зображення не знайдено.")
 
     await update.message.reply_text(
-        "🇺🇦 Вас вітає офіційний бот застосунку *ROZGOLOS*\.\n\n"
+        "\ud83c\uddfa\ud83c\udde6 Вас вітає офіційний бот застосунку *ROZGOLOS*\.\n\n"
         "Для запуску — заповніть коротку анкету нижче\.\n\n"
-        "🔽 Натисніть *Продовжити*, щоб розпочати\.",
+        "\ud83d\udd3d Натисніть *Продовжити*, щоб розпочати\.",
         reply_markup=ReplyKeyboardMarkup(
-            [[KeyboardButton("🚀 Продовжити")]], resize_keyboard=True
+            [[KeyboardButton("\ud83d\ude80 Продовжити")]], resize_keyboard=True
         ),
         parse_mode="MarkdownV2"
     )
@@ -54,7 +54,7 @@ async def await_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         return AWAIT_NAME
 
     await update.message.reply_text(
-        "👤 Введіть *Прізвище та ім’я*:",
+        "\ud83d\udc64 Введіть *Прізвище та ім’я*:",
         reply_markup=ReplyKeyboardRemove(),
         parse_mode="MarkdownV2"
     )
@@ -63,13 +63,13 @@ async def await_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 async def get_full_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data["full_name"] = update.message.text
-    await update.message.reply_text("📧 Введіть ваш Email:")
+    await update.message.reply_text("\ud83d\udce7 Введіть ваш Email:")
     return EMAIL
 
 
 async def get_email(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data["email"] = update.message.text
-    await update.message.reply_text("📞 Введіть ваш номер телефону:")
+    await update.message.reply_text("\ud83d\udcde Введіть ваш номер телефону:")
     return PHONE
 
 
@@ -77,40 +77,40 @@ async def get_phone(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data["phone"] = update.message.text
 
     await update.message.reply_text(
-        f"✅ Дякуємо за надану інформацію!\n\n"
-        f"👤 *ПІБ:* {context.user_data['full_name']}\n"
-        f"📧 *Email:* {context.user_data['email']}\n"
-        f"📞 *Телефон:* {context.user_data['phone']}",
+        f"\u2705 Дякуємо за надану інформацію!\n\n"
+        f"\ud83d\udc64 *ПІБ:* {context.user_data['full_name']}\n"
+        f"\ud83d\udce7 *Email:* {context.user_data['email']}\n"
+        f"\ud83d\udcde *Телефон:* {context.user_data['phone']}",
         parse_mode="Markdown"
     )
 
     await context.bot.send_message(
         chat_id=ADMIN_CHAT_ID,
         text=(
-            "📥 Нова заявка:\n\n"
-            f"👤 ПІБ: {context.user_data['full_name']}\n"
-            f"📧 Email: {context.user_data['email']}\n"
-            f"📞 Телефон: {context.user_data['phone']}"
+            "\ud83d\udcec Нова заявка:\n\n"
+            f"\ud83d\udc64 ПІБ: {context.user_data['full_name']}\n"
+            f"\ud83d\udce7 Email: {context.user_data['email']}\n"
+            f"\ud83d\udcde Телефон: {context.user_data['phone']}"
         )
     )
 
     buttons = InlineKeyboardMarkup([
-        [InlineKeyboardButton("🔗 Android", url="https://play.google.com/store/apps/details?id=com.rozgolos&utm_source=fb&utm_medium=paid_social&utm_campaign=Rozgolos04.05.25TGbotGoPl&utm_content=Rozgolos04.05.25TGbotGoPl&utm_term=Rozgolos04.05.25TGbotGoPl")],
-        [InlineKeyboardButton("🔗 iOS", url="https://rozgolos.online/apple/store?utm_source=fb&utm_medium=paid_social&utm_campaign=Rozgolos04.05.25TGbotAppSt&utm_content=Rozgolos04.05.25TGbotAppSt&utm_term=Rozgolos04.05.25TGbotAppSt")],
-        [InlineKeyboardButton("🌐 Офіційний сайт", url="https://rozgolos.online/bronyuvannya?utm_source=fb&utm_medium=paid_social&utm_campaign=RozgolosTelegram&utm_content=RozgolosTelegram&utm_term=RozgolosTelegram")]
+        [InlineKeyboardButton("\ud83d\udd17 Android", url="https://play.google.com/store/apps/details?id=com.rozgolos&referrer=utm_source%3Dfb%2526utm_medium%3Dpaid_social%2526utm_campaign%3DRozgolos04.05.25TGbotGoPl%2526utm_content%3DRozgolos04.05.25TGbotGoPl%2526utm_term%3DRozgolos04.05.25TGbotGoPl")],
+        [InlineKeyboardButton("\ud83d\udd17 iOS", url="https://rozgolos.online/apple/store?utm_source=fb&utm_medium=paid_social&utm_campaign=Rozgolos04.05.25TGbotAppSt&utm_content=Rozgolos04.05.25TGbotAppSt&utm_term=Rozgolos04.05.25TGbotAppSt")],
+        [InlineKeyboardButton("\ud83c\udf10 Офіційний сайт", url="https://rozgolos.online/bronyuvannya?utm_source=fb&utm_medium=paid_social&utm_campaign=RozgolosTelegram&utm_content=RozgolosTelegram&utm_term=RozgolosTelegram")]
     ])
 
     await update.message.reply_text(
-        "⬇️ Завантажити застосунок або відвідати сайт:",
+        "\u2b07\ufe0f Завантажити застосунок або відвідати сайт:",
         reply_markup=buttons
     )
 
-    await update.message.reply_text("🙏 Дякуємо! З вами зв’яжеться наш консультант.")
+    await update.message.reply_text("\ud83d\ude4f Дякуємо! З вами зв’яжеться наш консультант.")
     return ConversationHandler.END
 
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    await update.message.reply_text("❌ Операцію скасовано.")
+    await update.message.reply_text("\u274c Операцію скасовано.")
     return ConversationHandler.END
 
 

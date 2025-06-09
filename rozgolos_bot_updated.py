@@ -35,6 +35,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         await update.message.reply_text("⚠️ Зображення не знайдено.")
 
     await update.message.reply_text(
+        "🎯 *Тільки через бота* — повний доступ до ROZGOLOS *на 3 дні безкоштовно*!\n\n"
         "🇺🇦 Вас вітає офіційний бот застосунку *ROZGOLOS*\.\n\n"
         "Для запуску — заповніть коротку анкету нижче\.\n\n"
         "🔽 Натисніть *Продовжити*, щоб розпочати\.",
@@ -92,6 +93,12 @@ async def get_phone(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
             f"📧 Email: {context.user_data['email']}\n"
             f"📞 Телефон: {context.user_data['phone']}"
         )
+    )
+
+    await update.message.reply_text(
+        "🎁 Ви активували акцію — *3 дні повного доступу до ROZGOLOS безкоштовно!*\n\n"
+        "⚠️ Пропозиція дійсна лише при переході через цього Telegram-бота.",
+        parse_mode="Markdown"
     )
 
     buttons = InlineKeyboardMarkup([

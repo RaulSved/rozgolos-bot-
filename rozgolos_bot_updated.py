@@ -35,6 +35,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         await update.message.reply_text("⚠️ Зображення не знайдено.")
 
     await update.message.reply_text(
+        "🎯 *Тільки через цього бота* — повний доступ до ROZGOLOS *на 3 дні безкоштовно!*\n\n"
+        "⚠️ Пропозиція діє лише при переході через Telegram.",
+        parse_mode="MarkdownV2"
+    )
+
+    await update.message.reply_text(
         "🇺🇦 Вас вітає офіційний бот застосунку *ROZGOLOS*\.\n\n"
         "Для запуску — заповніть коротку анкету нижче\.\n\n"
         "🔽 Натисніть *Продовжити*, щоб розпочати\.",
@@ -94,6 +100,10 @@ async def get_phone(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         )
     )
 
+    await update.message.reply_text(
+        "🎁 Безкоштовний доступ відкривається після встановлення додатка через одну з кнопок нижче:"
+    )
+
     buttons = InlineKeyboardMarkup([
         [InlineKeyboardButton("🔗 Android", url="https://play.google.com/store/apps/details?id=com.rozgolos&utm_source=fb&utm_medium=paid_social&utm_campaign=Rozgolos04.05.25TGbotGoPl&utm_content=Rozgolos04.05.25TGbotGoPl&utm_term=Rozgolos04.05.25TGbotGoPl")],
         [InlineKeyboardButton("🔗 iOS", url="https://rozgolos.online/apple/store?utm_source=fb&utm_medium=paid_social&utm_campaign=Rozgolos04.05.25TGbotAppSt&utm_content=Rozgolos04.05.25TGbotAppSt&utm_term=Rozgolos04.05.25TGbotAppSt")],
@@ -136,4 +146,3 @@ async def main():
 if __name__ == "__main__":
     import nest_asyncio
     nest_asyncio.apply()
-    asyncio.run(main())

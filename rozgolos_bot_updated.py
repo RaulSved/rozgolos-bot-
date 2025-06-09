@@ -29,6 +29,7 @@ logger = logging.getLogger(__name__)
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    print("✅ start() triggered")
     try:
         await update.message.reply_photo(photo=open("rozgolos_start.jpg", "rb"))
     except FileNotFoundError:
@@ -48,6 +49,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 
 async def await_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    print("✅ await_name() triggered")
     if "продовжити" not in update.message.text.lower():
         await update.message.reply_text(
             "Натисніть кнопку *Продовжити*, щоб почати.", parse_mode="MarkdownV2"
@@ -63,18 +65,21 @@ async def await_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 
 async def get_full_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    print("✅ get_full_name() triggered")
     context.user_data["full_name"] = update.message.text
     await update.message.reply_text("📧 Введіть ваш Email:")
     return EMAIL
 
 
 async def get_email(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    print("✅ get_email() triggered")
     context.user_data["email"] = update.message.text
     await update.message.reply_text("📞 Введіть ваш номер телефону:")
     return PHONE
 
 
 async def get_phone(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    print("✅ get_phone() triggered")
     context.user_data["phone"] = update.message.text
 
     await update.message.reply_text(
@@ -117,11 +122,13 @@ async def get_phone(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    print("❌ cancel() triggered")
     await update.message.reply_text("❌ Операцію скасовано.")
     return ConversationHandler.END
 
 
 async def main():
+    print("🚀 Bot is starting...")
     app = ApplicationBuilder().token(TOKEN).build()
 
     conv_handler = ConversationHandler(

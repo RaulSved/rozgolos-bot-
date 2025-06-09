@@ -1,3 +1,6 @@
+m pathlib import Path
+
+code = """
 import asyncio
 import logging
 from telegram import (
@@ -36,10 +39,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         await update.message.reply_text("⚠️ Зображення не знайдено.")
 
     await update.message.reply_text(
-        "🎯 *Тільки через бота* — повний доступ до ROZGOLOS *на 3 дні безкоштовно*!\n\n"
-        "🇺🇦 Вас вітає офіційний бот застосунку *ROZGOLOS*\.\n\n"
-        "Для запуску — заповніть коротку анкету нижче\.\n\n"
-        "🔽 Натисніть *Продовжити*, щоб розпочати\.",
+        "🎯 *Тільки через бота* — повний доступ до ROZGOLOS *на 3 дні безкоштовно!*\\n\\n"
+        "🇺🇦 Вас вітає офіційний бот застосунку *ROZGOLOS*\\.\\n\\n"
+        "Для запуску — заповніть коротку анкету нижче\\.\\n\\n"
+        "🔽 Натисніть *Продовжити*, щоб розпочати\\.",
         reply_markup=ReplyKeyboardMarkup(
             [[KeyboardButton("🚀 Продовжити")]], resize_keyboard=True
         ),
@@ -83,9 +86,9 @@ async def get_phone(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     context.user_data["phone"] = update.message.text
 
     await update.message.reply_text(
-        f"✅ Дякуємо за надану інформацію!\n\n"
-        f"👤 *ПІБ:* {context.user_data['full_name']}\n"
-        f"📧 *Email:* {context.user_data['email']}\n"
+        f"✅ Дякуємо за надану інформацію!\\n\\n"
+        f"👤 *ПІБ:* {context.user_data['full_name']}\\n"
+        f"📧 *Email:* {context.user_data['email']}\\n"
         f"📞 *Телефон:* {context.user_data['phone']}",
         parse_mode="Markdown"
     )
@@ -93,15 +96,15 @@ async def get_phone(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await context.bot.send_message(
         chat_id=ADMIN_CHAT_ID,
         text=(
-            "📥 Нова заявка:\n\n"
-            f"👤 ПІБ: {context.user_data['full_name']}\n"
-            f"📧 Email: {context.user_data['email']}\n"
+            "📥 Нова заявка:\\n\\n"
+            f"👤 ПІБ: {context.user_data['full_name']}\\n"
+            f"📧 Email: {context.user_data['email']}\\n"
             f"📞 Телефон: {context.user_data['phone']}"
         )
     )
 
     await update.message.reply_text(
-        "🎁 Ви активували акцію — *3 дні повного доступу до ROZGOLOS безкоштовно!*\n\n"
+        "🎁 Ви активували акцію — *3 дні повного доступу до ROZGOLOS безкоштовно!*\\n\\n"
         "⚠️ Пропозиція дійсна лише при переході через цього Telegram-бота.",
         parse_mode="Markdown"
     )
@@ -151,3 +154,10 @@ if __name__ == "__main__":
     import nest_asyncio
     nest_asyncio.apply()
     asyncio.run(main())
+"""
+
+# Збережемо файл
+output_path = Path("/mnt/data/rozgolos_bot_fixed.py")
+output_path.write_text(code, encoding="utf-8")
+
+output_path.name

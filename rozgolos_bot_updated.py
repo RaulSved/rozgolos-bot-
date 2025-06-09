@@ -37,17 +37,17 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await update.message.reply_text(
         "🎯 *Тільки через цього бота* — повний доступ до ROZGOLOS *на 3 дні безкоштовно!*\n\n"
         "⚠️ Пропозиція діє лише при переході через Telegram.",
-        parse_mode="MarkdownV2"
+        parse_mode="Markdown"
     )
 
     await update.message.reply_text(
-        "🇺🇦 Вас вітає офіційний бот застосунку *ROZGOLOS*\.\n\n"
-        "Для запуску — заповніть коротку анкету нижче\.\n\n"
-        "🔽 Натисніть *Продовжити*, щоб розпочати\.",
+        "🇺🇦 Вас вітає офіційний бот застосунку *ROZGOLOS*\n\n"
+        "Для запуску — заповніть коротку анкету нижче.\n\n"
+        "🔽 Натисніть *Продовжити*, щоб розпочати.",
         reply_markup=ReplyKeyboardMarkup(
             [[KeyboardButton("🚀 Продовжити")]], resize_keyboard=True
         ),
-        parse_mode="MarkdownV2"
+        parse_mode="Markdown"
     )
     return AWAIT_NAME
 
@@ -55,14 +55,14 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 async def await_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     if "продовжити" not in update.message.text.lower():
         await update.message.reply_text(
-            "Натисніть кнопку *Продовжити*, щоб почати.", parse_mode="MarkdownV2"
+            "Натисніть кнопку *Продовжити*, щоб почати.", parse_mode="Markdown"
         )
         return AWAIT_NAME
 
     await update.message.reply_text(
         "👤 Введіть *Прізвище та ім’я*:",
         reply_markup=ReplyKeyboardRemove(),
-        parse_mode="MarkdownV2"
+        parse_mode="Markdown"
     )
     return FULL_NAME
 
